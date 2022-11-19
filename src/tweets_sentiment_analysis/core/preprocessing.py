@@ -1,0 +1,57 @@
+import re
+import nltk
+from typing import List
+
+
+nltk.download([
+    'stopwords',
+    'punkt',
+    'wordnet',
+    'omw-1.4',
+    'averaged_perceptron_tagger']
+)
+
+TAGS = {
+    "J": nltk.corpus.wordnet.ADJ,
+    "N": nltk.corpus.wordnet.NOUN,
+    "V": nltk.corpus.wordnet.VERB,
+    "R": nltk.corpus.wordnet.ADV
+}
+STOPWORDS = set(nltk.corpus.stopwords.words("english"))
+
+
+class TextPreprocessor:
+    def __init__(
+        self,
+        use_lemmatizer: bool = True,
+        use_lowercase: bool = True,
+        remove_stopwords: bool = True
+    ):
+        self.lemmatizer = nltk.stem.WordNetLemmatizer()
+        self.tokenizer = re.compile(r'\w+')
+        self.use_lemmatizer = use_lemmatizer
+        self.use_lowercase = use_lowercase
+        self.remove_stopwords = remove_stopwords
+
+    def _tokenize(self, doc: str) -> List[str]:
+        return self.tokenizer.findall(doc)
+
+    def _get_lemma(self, word: str, tag: str) -> str:
+        if tag[0] not in TAGS.keys():
+            return self.lemmatizer.lemmatize(word)
+        return self.lemmatizer.lemmatize(word, TAGS[tag[0]])
+
+    def _transform(self, doc: str) -> List[str]:
+        tokens = self._tokenize(doc)
+        
+        if self.use_lowercase:
+            tokens = [t.lower() for t in tokens]
+        
+        if self.use_lemmatizer:
+            tags = nltk.pos_tag(tokens)
+            tokens = [self._get_lemma(token, tag) for token, tag in tags]
+
+        if self.remove_stopwords:
+            tokens = [t for t in tokens if t not in STOPWORDS]
+
+        return ' '.join(tokens)
