@@ -1,0 +1,32 @@
+training:
+  data:
+    source:
+      - s3://{}/reviews/reviews_partition_1.csv
+    frac: 1
+  meta:
+    model_name: logreg_on_tfidf
+    movel_version: 1
+  preprocessor:
+    use_flg: True
+    module: sentiment_analysis.core.preprocessing
+    class: TextPreprocessor
+    hyperparams:
+      use_lemmatizer: True
+      use_lowercase: True
+      remove_stopwords: True
+  vectorizer:
+    use_flg: True
+    module: sklearn.feature_extraction.text
+    class: TfidfVectorizer
+    hyperparams:
+      ngram_range: (1, 2)
+      max_features: 7500
+      sublinear_tf: True       
+  classifier:
+    use_flg: True
+    module: sklearn.linear_model
+    class: LogisticRegression
+    hyperparams: null
+app:
+  name: 'MyApp'
+  model_name: logreg_on_tfidf
