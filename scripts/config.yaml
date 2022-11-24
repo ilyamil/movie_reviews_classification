@@ -1,11 +1,14 @@
 training:
   data:
-    source:
+    sources:
       - s3://{}/reviews/reviews_partition_1.csv
     frac: 1
-  meta:
-    model_name: logreg_on_tfidf
-    movel_version: 1
+    n: None
+  model_meta:
+    path: s3://{}/models/{}.pickle
+    name: logreg_on_tfidf
+    desc: Logistic Regression model trained on TF-IDF features of preprocessed text
+    version: 1
   preprocessor:
     use_flg: True
     module: sentiment_analysis.core.preprocessing
@@ -29,4 +32,6 @@ training:
     hyperparams: null
 app:
   name: 'MyApp'
+  model_path: s3://{}/models/{}.pickle
   model_name: logreg_on_tfidf
+  model_version: 1
