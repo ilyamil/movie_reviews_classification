@@ -23,16 +23,6 @@ TAGS = {
 STOPWORDS = set(nltk.corpus.stopwords.words("english"))
 
 
-def preprocess_data(data: pd.DataFrame) -> Tuple[pd.Series, pd.Series]:
-    """
-    Removes objects without rating and creates target variable column.
-    """
-    data_ = data.copy()
-    data_['positive'] = data_['rating'] > 5
-    data_ = data_[~data_['rating'].isna()].drop('rating', axis=1)
-    return data_['text'], data_['positive']
-
-
 class TextPreprocessor(BaseEstimator, TransformerMixin):
     def __init__(
         self,

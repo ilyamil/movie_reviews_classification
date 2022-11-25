@@ -2,8 +2,8 @@ training:
   data:
     sources:
       - s3://{}/reviews/reviews_partition_1.csv
-    frac: 1
-    n: None
+    frac: null
+    n: 100
   model_meta:
     path: s3://{}/models/{}.pickle
     name: logreg_on_tfidf
@@ -22,7 +22,7 @@ training:
     module: sklearn.feature_extraction.text
     class: TfidfVectorizer
     hyperparams:
-      ngram_range: (1, 2)
+      ngram_range: [1, 2]
       max_features: 7500
       sublinear_tf: True       
   classifier:

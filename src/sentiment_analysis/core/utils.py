@@ -1,6 +1,9 @@
 import importlib
 import pickle
+import boto3
+import yaml
 from typing import Dict, Any
+from sklearn.base import BaseEstimator
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, cross_validate
 from sklearn.metrics import accuracy_score
@@ -48,8 +51,7 @@ def measure_performance(estimator, X, y, model_nm, train_size=0.8):
     val_std = cv['test_score'].std()
     print(
         f'Accuracy of {model_nm} on validation set:',
-        f'{val_mean:.3f} +/- {val_std:.3f}',
-        sep='\n'
+        f'{val_mean:.3f} +/- {val_std:.3f}'
     )
 
     estimator.fit(X_train, y_train)
@@ -58,5 +60,24 @@ def measure_performance(estimator, X, y, model_nm, train_size=0.8):
     print(f'Accuracy of {model_nm} on test set: {test_score:.3f}')
 
 
-def save_estimator(estimator, path):
-    pass
+def save_estimator(
+    estimator: BaseEstimator,
+    path: str,
+    credentials: Dict[str, str]
+) -> bool:
+    s3 = boto3.resource(
+        's3',
+        region_name=credentials['aws']['region'],
+        aws_access_key_id=credentials['aws']['access_key'],
+        aws_secret_access_key=credentials['aws']['secret_access_key']
+    )
+    model_byte_obj = pickle.dumps(estimator)
+    s3.Object(credentials['aws']['bucket'], path).put(Body=model_byte_obj)
+
+
+def load_yaml(path: str, **sections) -> Any:
+    with open(path, 'r') as f:
+        d = yaml.safe_load(f)
+    for s in sections:
+        d = d[s]
+    return d

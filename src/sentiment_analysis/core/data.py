@@ -12,10 +12,14 @@ def load_data(
             source,
             compression='gzip',
             storage_options=storage_options,
-            usecols=['text', 'rating', 'total_votes']
+            usecols=['text', 'rating', 'total_votes'],
+            nrows=100
         )
         datasets.append(data)
-    return pd.concat(datasets, ignore_index=True)
+    dataset = pd.concat(datasets, ignore_index=True)
+    dataset['positive'] = dataset['rating'] > 5
+    dataset = dataset[~dataset['rating'].isna()].drop('rating', axis=1)
+    return dataset
 
 
 def sample_data(
@@ -44,7 +48,7 @@ def sample_data(
     if (not frac and not n) or (frac and n):
         raise ValueError('Either "frac" or "n" must be set.')
     if frac:
-        if (frac > 1) | (frac < 0):
+        if (frac > 1) or (frac < 0):
             raise ValueError('"frac" must be in range [0, 1]')
         if frac == 1:
             return data
@@ -55,7 +59,7 @@ def sample_data(
             labels_samples.append(sample)
         sample_df = pd.concat(labels_samples, ignore_index=True)
     elif n:
-        if (n < 1) | (n > data_len):
+        if n < 1:
             raise ValueError('"n" must be in range [1, len(data)]')
         sample_df = (
             data
