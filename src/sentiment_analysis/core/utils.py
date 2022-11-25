@@ -40,6 +40,7 @@ def measure_performance(estimator, X, y, model_nm, train_size=0.8):
         estimator,
         X_train,
         y_train,
+        n_jobs=-1,
         scoring='accuracy',
         return_train_score=True
     )
