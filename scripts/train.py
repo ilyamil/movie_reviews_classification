@@ -1,14 +1,12 @@
 import os
 import sys
-import yaml
-import pandas as pd
-import boto3
+import argparse
 
 sys.path.append(os.path.join('..', 'src'))
 
 from sentiment_analysis.core.utils import create_pipeline, measure_performance
 from sentiment_analysis.core.data import load_data, sample_data
-from sentiment_analysis.core.utils import save_estimator, load_yaml
+from sentiment_analysis.core.utils import save_object, load_yaml
 
 
 CONFIG_PATH = 'config.yaml'
@@ -17,7 +15,27 @@ MODEL_FOLDER = os.path.join('..', 'data', 'models')
 TRAIN_SIZE = 0.8
 
 
-def train_model():
+def parse_train_cli_arguments():
+    parser = argparse.ArgumentParser(
+        'Model Trainer',
+        description=(
+            'Train machine learning model to perform sentiment analysis'
+        )
+    )
+    parser.add_argument(
+        '-m',
+        type=bool,
+        default=True,
+        help=(
+            'Boolean flag to indicate whethere the program needs to do '
+            'cross-validation. If set to True, it takes 2-3 times more '
+            'time to finish the script.'
+        )
+    )
+    return parser.parse_args()
+
+
+def train_model(measure_performance_flg: bool = True):
     config = load_yaml(CONFIG_PATH, 'training')
     credentials = load_yaml(CREDENTIALS_PATH)
 
@@ -29,9 +47,7 @@ def train_model():
     model_nm = config['model_meta']['name']
     model_ver = config['model_meta']['version']
     full_model_nm = f'{model_nm}_v{model_ver}'
-    save_path = config['model_meta']['path'].format(
-        credentials['aws']['bucket']
-    )
+    save_path = config['model_meta']['path'].format(full_model_nm)
 
     data_sources = [
         s.format(credentials['aws']['bucket'])
@@ -47,12 +63,14 @@ def train_model():
 
     pipeline = create_pipeline(config)
 
-    measure_performance(pipeline, X, y, full_model_nm, TRAIN_SIZE)
+    if measure_performance_flg:
+        measure_performance(pipeline, X, y, full_model_nm, TRAIN_SIZE)
 
     pipeline.fit(X, y)
-    save_estimator(pipeline, save_path, credentials)
-    print(f'Model {full_model_nm} have been saved on S3!')
+    save_object(pipeline, save_path, credentials)
+    print(f'Model {full_model_nm} is saved on S3!')
 
 
 if __name__ == '__main__':
-    train_model()
+    arguments = parse_train_cli_arguments()
+    train_model(arguments.measure_performance_flg)

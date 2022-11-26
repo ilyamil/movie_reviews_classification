@@ -12,8 +12,7 @@ def load_data(
             source,
             compression='gzip',
             storage_options=storage_options,
-            usecols=['text', 'rating', 'total_votes'],
-            nrows=100
+            usecols=['text', 'rating', 'total_votes']
         )
         datasets.append(data)
     dataset = pd.concat(datasets, ignore_index=True)
@@ -40,9 +39,6 @@ def sample_data(
         n (int, optional): _description_. Defaults to None.
         label (str, optional): _description_. Defaults to 'positive'.
         weight (str, optional): _description_. Defaults to 'total_votes'.
-
-    Returns:
-        pd.DataFrame: _description_
     """
     data_len = len(data)
     if (not frac and not n) or (frac and n):

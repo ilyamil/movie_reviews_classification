@@ -3,9 +3,9 @@ training:
     sources:
       - s3://{}/reviews/reviews_partition_1.csv
     frac: null
-    n: 100
+    n: 10000
   model_meta:
-    path: s3://{}/models/{}.pickle
+    path: models/{}.pickle
     name: logreg_on_tfidf
     desc: Logistic Regression model trained on TF-IDF features of preprocessed text
     version: 1
@@ -32,6 +32,6 @@ training:
     hyperparams: null
 app:
   name: 'MyApp'
-  model_path: s3://{}/models/{}.pickle
+  model_path: models/{}.pickle
   model_name: logreg_on_tfidf
   model_version: 1
