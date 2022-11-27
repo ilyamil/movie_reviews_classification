@@ -1,7 +1,7 @@
 import re
 import nltk
 import pandas as pd
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
 from sklearn.base import BaseEstimator, TransformerMixin
 
 
@@ -62,5 +62,7 @@ class TextPreprocessor(BaseEstimator, TransformerMixin):
     def fit(self, X=None, y=None):
         return self
 
-    def transform(self, X: pd.Series) -> pd.Series:
+    def transform(self, X: Iterable[str]) -> pd.Series:
+        if not isinstance(X, pd.Series):
+            return pd.Series(X).apply(self._transform)
         return X.apply(self._transform)

@@ -73,4 +73,4 @@ def train_model(measure_performance_flg: bool = True):
 
 if __name__ == '__main__':
     arguments = parse_train_cli_arguments()
-    train_model(arguments.measure_performance_flg)
+    train_model(arguments.m)

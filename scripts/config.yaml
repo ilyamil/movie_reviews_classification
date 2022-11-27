@@ -3,7 +3,7 @@ training:
     sources:
       - s3://{}/reviews/reviews_partition_1.csv
     frac: null
-    n: 10000
+    n: 30000
   model_meta:
     path: models/{}.pickle
     name: logreg_on_tfidf
@@ -29,7 +29,8 @@ training:
     use_flg: True
     module: sklearn.linear_model
     class: LogisticRegression
-    hyperparams: null
+    hyperparams:
+      max_iter: 1000
 app:
   name: 'MyApp'
   model_path: models/{}.pickle
