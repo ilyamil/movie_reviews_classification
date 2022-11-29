@@ -20,5 +20,5 @@ storage_options = {
 }
 
 tweepy_client = tweepy.Client(credentials['twitter']['bearer_token'])
-tw = tweepy_client.get_users_tweets('WSJ', max_results=10)
+tw = tweepy_client.get_users_tweets(3108351, max_results=10)
 print(tw)

@@ -1,0 +1,217 @@
+# This list of well known news media companies was created with help of
+# the following web-sites with rankings:
+# 1. https://muckrack.com/rankings/top-50-UK-newspapers
+# 2. https://www.intelligencefusion.co.uk/insights/resources/article/top-30-most-followed-news-accounts-on-twitter/
+# 3. https://www.statista.com/statistics/381569/leading-news-and-media-sites-usa-by-share-of-visits/
+# 4. https://pressgazette.co.uk/news/most-popular-websites-news-world-monthly/
+sources:
+  source_1:
+    name: The Wall Street Journal
+    twitter_id: 3108351
+    twitter_name: WSJ
+    website: https://www.wsj.com
+    country: US
+  source_2:
+    name: CNN
+    twitter_id: 759251
+    twitter_name: CNN
+    website: https://edition.cnn.com
+    country: US
+  source_3:
+    name: Fox News
+    twitter_id: 1367531
+    twitter_name: FoxNews
+    website: https://www.foxnews.com
+    country: US
+  source_4:
+    name: The New York Times
+    twitter_id: 807095
+    twitter_name: nytimes
+    website: https://www.nytimes.com
+    country: US
+  source_5:
+    name: The Washington Post
+    twitter_id: 2467791
+    twitter_name: washingtonpost
+    website: https://www.washingtonpost.com
+    country: US
+  source_6:
+    name: New York Post
+    twitter_id: 17469289
+    twitter_name: nypost
+    website: https://nypost.com
+    country: US
+  source_7:
+    name: CNBC
+    twitter_id: 20402945
+    twitter_name: CNBC 
+    website: https://www.cnbc.com
+    country: US
+  source_8:
+    name: Yahoo News
+    twitter_id: 7309052
+    twitter_name: YahooNews
+    website: https://news.yahoo.com
+    country: US
+  source_9:
+    name: Daily Mail
+    twitter_id: 15438913
+    twitter_name: MailOnline
+    website: https://www.dailymail.co.uk
+    country: UK
+  source_10:
+    name: BBC News
+    twitter_id: 742143
+    twitter_name: BBCWorld
+    website: https://www.bbc.com/news
+    country: UK
+  source_11:
+    name: USA Today
+    twitter_id: 15754281
+    twitter_name: USATODAY
+    website: https://www.usatoday.com
+    country: US
+  source_12:
+    name: People
+    twitter_id: 25589776
+    twitter_name: people
+    website: https://people.com
+    country: US
+  source_13:
+    name: HuffPost
+    twitter_id: 14511951
+    twitter_name: HuffPost
+    website: https://www.huffpost.com
+    country: UK
+  source_14:
+    name: The Guardian News
+    twitter_id: 788524
+    twitter_name: guardiannews
+    website: https://www.theguardian.com/international
+    country: UK
+  source_15:
+    name: Business Insider
+    twitter_id: 20562637
+    twitter_name: BusinessInsider
+    website: https://www.businessinsider.com
+    country: US
+  source_16:
+    name: Forbes
+    twitter_id: 91478624
+    twitter_name: Forbes
+    website: https://www.forbes.com
+    country: US
+  source_17:
+    name: ABC News
+    twitter_id: 28785486
+    twitter_name: ABC
+    website: https://abcnews.go.com
+    country: US
+  source_18:
+    name: RT
+    twitter_id: 64643056
+    twitter_name: RT_com
+    website: https://www.rt.com
+    country: Russia 
+  source_19:
+    name: The Telegraph
+    twitter_id: 16343974
+    twitter_name: Telegraph
+    website: https://www.telegraph.co.uk
+    country: UK
+  source_20:
+    name: Newsweek
+    twitter_id: 2884771
+    twitter_name: Newsweek
+    website: https://www.newsweek.com
+    country: US
+  source_21:
+    name: The Independent
+    twitter_id: 16973333
+    twitter_name: Independent
+    website: https://www.independent.co.uk
+    country: UK
+  source_22:
+    name: France 24
+    twitter_id: 1994321
+    twitter_name: FRANCE24
+    website: https://www.france24.com/en/
+    country: France
+  source_23:
+    name: Politico
+    twitter_id: 9300262
+    twitter_name: politico
+    website: https://www.politico.com
+    country: US
+  source_24:
+    name: Sky News Breaking
+    twitter_id: 87416722
+    twitter_name: SkyNewsBreak
+    website: https://news.sky.com
+    country: UK
+  source_25:
+    name: Financial Times
+    twitter_id: 18949452
+    twitter_name: FT
+    website: https://www.ft.com
+    country: UK
+  source_26:
+    name: Al Jazeera English
+    twitter_id: 4970411
+    twitter_name: AJEnglish
+    website: https://www.aljazeera.com
+    country: Qatar
+  source_27:
+    name: China Xinhua News
+    twitter_id: 487118986
+    twitter_name: XHNews
+    website: https://english.news.cn
+    country: China
+  source_28:
+    name: The Associated Press
+    twitter_id: 51241574
+    twitter_name: AP
+    website: https://apnews.com
+    country: US
+  source_29:
+    name: NDTV
+    twitter_id: 37034483
+    twitter_name: ndtv
+    website: https://www.ndtv.com
+    country: India
+  source_30:
+    name: TIME
+    twitter_id: 14293310
+    twitter_name: TIME
+    website: https://time.com
+    country: US
+  source_31:
+    name: Reuters
+    twitter_id: 1652541
+    twitter_name: Reuters
+    website: https://www.reuters.com
+    country: UK
+  source_32:
+    name: The Economist
+    twitter_id: 5988062
+    twitter_name: TheEconomist
+    website: https://www.economist.com
+    country: UK
+  source_33:
+    name: Euronews
+    twitter_id: 25067168
+    twitter_name: euronews
+    website: https://www.euronews.com
+    country: Europe
+  source_34:
+    name: Deutsche Welle
+    twitter_id: 6134882
+    twitter_name: dwnews
+    website: https://www.dw.com
+    country: Germany
+  source_35:
+    name: Bloomberg
+    twitter_id: 34713362
+    twitter_name: business
+    website: https://www.bloomberg.com/europe
+    country: US
