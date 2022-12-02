@@ -35,10 +35,11 @@ def sample_data(
 
     Args:
         data (pd.DataFrame): input data
-        frac (float, optional): fraction of 
-        n (int, optional): _description_. Defaults to None.
-        label (str, optional): _description_. Defaults to 'positive'.
-        weight (str, optional): _description_. Defaults to 'total_votes'.
+        frac (float, optional): fraction of objects in each label
+        n (int, optional): number of objects in each label
+        label (str, optional): label column. Defaults to 'positive'.
+        weight (str, optional): weight column. Objects with larger weights will
+            be picked first. Defaults to 'total_votes'.
     """
     data_len = len(data)
     if (not frac and not n) or (frac and n):
