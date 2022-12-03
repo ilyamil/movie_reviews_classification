@@ -1,12 +1,12 @@
 import os
-import sys
 import argparse
-
-sys.path.append(os.path.join('..', 'src'))
-
-from sentiment_analysis.core.utils import create_pipeline, measure_performance
+from sentiment_analysis.core.utils import (
+    create_pipeline,
+    measure_performance,
+    save_object,
+    load_yaml
+)
 from sentiment_analysis.core.data import load_data, sample_data
-from sentiment_analysis.core.utils import save_object, load_yaml
 
 
 CONFIG_PATH = 'config.yaml'

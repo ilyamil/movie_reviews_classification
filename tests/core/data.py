@@ -1,13 +1,11 @@
-import os
-import sys
 import pytest
 import pandas as pd
 
-
-ROOT_DIR = os.path.join('..', '..', '..', 'src')
-sys.path.append(ROOT_DIR)
+# ROOT_DIR = os.path.join('..', '..', '..', 'src')
+# sys.path.append(ROOT_DIR)
 
 from sentiment_analysis.core.data import sample_data
+
 
 @pytest.fixture
 def reviews_dataset():
@@ -15,7 +13,7 @@ def reviews_dataset():
         'text': ['a', 'b', 'c', 'd', 'e', 'ee', 'ff', 'g', 'm', 'mm'],
         'total_votes': [10, 1, 2, 3, 4, 5, 6, 7, 8, 9],
         'positive': [True, False, True, False, True,
-                    False, True, False, True, False]
+                     False, True, False, True, False]
     })
 
 
@@ -27,8 +25,9 @@ def test_sample_data_n(reviews_dataset):
         weight='total_votes'
     )
     assert len(sample) == 4
-    assert len(sample[sample['positive'] == True])\
-            & len(sample[sample['positive'] == False])
+    assert len(sample[sample['positive']])\
+           & len(sample[sample['positive']])
+
 
 def test_sample_data_frac_part(reviews_dataset):
     sample = sample_data(
@@ -38,8 +37,8 @@ def test_sample_data_frac_part(reviews_dataset):
         weight='total_votes'
     )
     assert len(sample) == 4
-    assert (len(sample[sample['positive'] == True]) == 2)\
-            & (len(sample[sample['positive'] == False]) == 2)
+    assert (len(sample[sample['positive']]) == 2)\
+           & (len(sample[sample['positive']]) == 2)
 
 
 def test_sample_data_frac_full(reviews_dataset):
@@ -50,5 +49,5 @@ def test_sample_data_frac_full(reviews_dataset):
         weight='total_votes'
     )
     assert len(sample) == 10
-    assert (len(sample[sample['positive'] == True]) == 5)\
-            & (len(sample[sample['positive'] == False]) == 5)
+    assert (len(sample[sample['positive']]) == 5)\
+           & (len(sample[sample['positive']]) == 5)

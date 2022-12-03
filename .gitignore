@@ -6,6 +6,12 @@ __pycache__/
 # Local files
 credentials.yaml
 
+# VSCode
+.vscode
+
+# ignoring database for testing
+*.db
+
 # C extensions
 *.so
 
