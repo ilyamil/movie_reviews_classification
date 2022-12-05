@@ -44,10 +44,33 @@ def test_add_model_single_record():
     )
 
 
-def test_add_model_multiple_records():
+def test_add_model_single_record_twice():
+    record = {
+        'model_name': 'logreg',
+        'model_version': 2,
+        'model_desc': 'some desc',
+        'model_ref': 'here.joblib',
+        'train_size': 1,
+        'trained_at_dt': datetime(2000, 1, 31)
+    }
+    add_model(SESSION, **record)
+    record = {
+        'model_name': 'logreg',
+        'model_version': 2,
+        'model_desc': 'some desc',
+        'model_ref': 'here.joblib',
+        'train_size': 1,
+        'trained_at_dt': datetime(2000, 1, 31)
+    }
+    add_model(SESSION, **record)
+    records_back = SESSION.query(Model).filter(Model.model_version == 2).all()
+    assert len(records_back) == 1
+
+
+def test_add_model_multiple_records_same():
     records = {
         'model_name': ['logreg', 'logreg'],
-        'model_version': [2, 2],
+        'model_version': [3, 3],
         'model_desc': ['some desc', 'some desc'],
         'model_ref': ['here.joblib', 'here.joblib'],
         'train_size': [1, 1],
@@ -57,7 +80,26 @@ def test_add_model_multiple_records():
     add_model(SESSION, **records)
     records_back = (
         SESSION.query(Model)
-        .filter(Model.model_version == 2)
+        .filter(Model.model_version == 3)
+        .all()
+    )
+    assert len(records_back) == 1
+
+
+def test_add_model_multiple_records_different():
+    records = {
+        'model_name': ['logreg', 'logreg_tfidf'],
+        'model_version': [4, 4],
+        'model_desc': ['some desc', 'some desc'],
+        'model_ref': ['here.joblib', 'here.joblib'],
+        'train_size': [1, 1],
+        'trained_at_dt': [datetime(2000, 1, 31), datetime(2000, 1, 31)]
+    }
+    Base.metadata.create_all(ENGINE, checkfirst=True)
+    add_model(SESSION, **records)
+    records_back = (
+        SESSION.query(Model)
+        .filter(Model.model_version == 4)
         .all()
     )
     assert len(records_back) == 2

@@ -13,7 +13,7 @@ class Prediction(Base):
     calculated_at_dt = Column(DateTime)
 
 
-def add_predictions(
+def add_prediction(
     session,
     prediction_id: List[int],
     model_id: List[int],
