@@ -44,7 +44,7 @@ def test_add_model_single_record():
     )
 
 
-def test_add_model_multiple_records_same():
+def test_add_model_multiple_records():
     records = {
         'model_name': ['logreg', 'logreg'],
         'model_version': [2, 2],
@@ -55,9 +55,12 @@ def test_add_model_multiple_records_same():
     }
     Base.metadata.create_all(ENGINE, checkfirst=True)
     add_model(SESSION, **records)
-    records_back = SESSION.query(Model).filter(Model.model_version == 2).all()
-    # assert len(records_back) == 1
-    assert (records_back[0].model_version == 2) and (records_back[1].model_version == 2)
+    records_back = (
+        SESSION.query(Model)
+        .filter(Model.model_version == 2)
+        .all()
+    )
+    assert len(records_back) == 2
 
 
 def test_dummy():
