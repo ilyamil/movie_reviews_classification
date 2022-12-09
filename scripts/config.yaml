@@ -31,7 +31,9 @@ training:
     class: LogisticRegression
     hyperparams:
       max_iter: 1000
-crawler: null
+crawler:
+  frequency: 120
+  max_tweets_per_user: 30
 app:
   name: 'MyApp'
   model_path: models/{}.pickle
