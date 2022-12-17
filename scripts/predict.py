@@ -1,6 +1,3 @@
-print('Hello, World!')
-import os
-print(os.getenv('AWS_BUCKET'))
 # import os
 # import sys
 # import argparse

@@ -32,8 +32,9 @@ training:
     hyperparams:
       max_iter: 1000
 crawler:
-  frequency: 120
-  max_tweets_per_user: 30
+  frequency: 60
+  max_tweets_per_user: 19
+  path_template: 'news_headlines_sentiment_index/tweets/{}.csv'
 app:
   name: 'MyApp'
   model_path: models/{}.pickle

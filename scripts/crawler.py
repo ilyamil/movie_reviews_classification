@@ -1,8 +1,12 @@
 import os
-from datetime import datetime, timezone
-from dateutil.relativedelta import relativedelta
-from sentiment_analysis.core.utils import load_yaml
+import boto3
+import pandas as pd
+from dotenv import load_dotenv
+from sentiment_analysis.core.utils import load_yaml, write_to_s3
 from sentiment_analysis.crawler.tweets import load_tweets
+
+
+load_dotenv()
 
 
 CONFIG_FILE = os.path.join(
@@ -17,21 +21,41 @@ SOURCES_FILE = os.path.join(
     'data',
     'sources.yaml'
 )
+TWITTER_TOKEN = os.getenv('TWITTER_BEARER_TOKEN')
+AWS_BUCKET = os.getenv('AWS_BUCKET')
+AWS_REGION = os.getenv('AWS_REGION')
+AWS_ACCESS_KEY = os.getenv('AWS_KEY')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_KEY')
+S3_CLIENT = boto3.client(
+    's3',
+    aws_access_key_id=AWS_ACCESS_KEY,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION,
+    config=boto3.session.Config(signature_version='s3v4')
+)
 
 
-def run():
+def run(*args):
+    # loading config files
     config = load_yaml(CONFIG_FILE, 'crawler')
     sources = load_yaml(SOURCES_FILE, 'sources')
-    end_dt = datetime.now(timezone.utc)
-    start_dt = end_dt - relativedelta(minutes=config['frequency'])
+
+    # data collection
+    freq = config['frequency']
+    end_dt = pd.Timestamp.now('utc').floor(f'{freq}min')
+    start_dt = end_dt - pd.offsets.Hour(freq)
+    user_id = [s['twitter_id'] for s in sources.values()]
     tweets = load_tweets(
-        token=os.getenv('TWITTER_BEARER_TOKEN'),
-        user_id=[v['twitter_id'] for v in sources.values()],
-        max_results=5,
-        start_dt=start_dt,
-        end_dt=end_dt
+        token=TWITTER_TOKEN,
+        user_id=user_id,
+        max_results=config['max_tweets_per_user'],
+        start_dt=start_dt.to_pydatetime(),
+        end_dt=end_dt.to_pydatetime()
     )
-    print(len(tweets), tweets['user_id'].nunique())
+
+    # data store
+    key = config['path_template'].format(end_dt.strftime('%Y%m%d%H%M%S'))
+    write_to_s3(S3_CLIENT, tweets, AWS_BUCKET, key)
 
 
 if __name__ == '__main__':

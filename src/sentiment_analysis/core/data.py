@@ -1,3 +1,4 @@
+import s3fs # noqa. Added this line to include in requirements using pipreqs
 import pandas as pd
 from typing import List, Dict
 
@@ -31,7 +32,7 @@ def sample_data(
     """
     Generate a sample by picking objects with most number of votes from each
     classes. So a review with highest number of votes will be picked first.
-    Note: this is not a random sample.     
+    Note: this is not a random sample.
 
     Args:
         data (pd.DataFrame): input data
@@ -41,7 +42,6 @@ def sample_data(
         weight (str, optional): weight column. Objects with larger weights will
             be picked first. Defaults to 'total_votes'.
     """
-    data_len = len(data)
     if (not frac and not n) or (frac and n):
         raise ValueError('Either "frac" or "n" must be set.')
     if frac:

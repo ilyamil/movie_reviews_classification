@@ -1,0 +1,15 @@
+# this works in AWS Lambda
+FROM public.ecr.aws/lambda/python:3.9
+COPY ./ .
+RUN python3 -m pip install --upgrade pip \
+    && pip install -r requirements.txt \
+    && pip install -e .
+CMD ["scripts/crawler.run"]
+
+# # this works outside of AWS Lambda
+# FROM python:3.9.16-slim-bullseye
+# COPY ./ .
+# RUN python3 -m pip install --upgrade pip \
+#     && pip install -r requirements.txt \
+#     && pip install -e .
+# CMD ["python3", "./scripts/crawler.py"]

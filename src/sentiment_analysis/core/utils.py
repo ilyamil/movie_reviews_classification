@@ -2,6 +2,9 @@ import importlib
 import pickle
 import boto3
 import yaml
+import csv
+import io
+import pandas as pd
 from typing import Dict, Any
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, cross_validate
@@ -105,3 +108,20 @@ def load_yaml(path: str, *sections) -> Any:
     for s in sections:
         d = d[s]
     return d
+
+
+def write_to_s3(s3_client, data: pd.DataFrame, bucket: str, key: str):
+    csvio = io.StringIO()
+    writer = csv.writer(csvio)
+    writer.writerow(data.columns)
+
+    for row in data.values:
+        writer.writerow(row)
+
+    s3_client.put_object(
+        Body=csvio.getvalue(),
+        ContentType='application/vnd.ms-excel',
+        Bucket=bucket,
+        Key=key
+    )
+    csvio.close()

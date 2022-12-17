@@ -1,7 +1,7 @@
 import tweepy
 import pandas as pd
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import List
 
 
 def load_tweets(
@@ -10,7 +10,7 @@ def load_tweets(
     max_results: int,
     start_dt: datetime,
     end_dt: datetime
-) -> Dict[str, List[Any]]:
+) -> pd.DataFrame:
     client = tweepy.Client(token)
     users_tweets = []
     for uid in user_id:
