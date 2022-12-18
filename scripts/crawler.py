@@ -2,7 +2,12 @@ import os
 import boto3
 import pandas as pd
 from dotenv import load_dotenv
-from sentiment_analysis.core.utils import load_yaml, write_to_s3
+from sentiment_analysis.core.utils import (
+    load_yaml,
+    write_csv_to_s3,
+    read_csv_from_s3,
+    check_file
+)
 from sentiment_analysis.crawler.tweets import load_tweets
 
 
@@ -43,7 +48,7 @@ def run(*args):
     # data collection
     freq = config['frequency']
     end_dt = pd.Timestamp.now('utc').floor(f'{freq}min')
-    start_dt = end_dt - pd.offsets.Hour(freq)
+    start_dt = end_dt - pd.offsets.Minute(freq)
     user_id = [s['twitter_id'] for s in sources.values()]
     tweets = load_tweets(
         token=TWITTER_TOKEN,
@@ -54,8 +59,43 @@ def run(*args):
     )
 
     # data store
-    key = config['path_template'].format(end_dt.strftime('%Y%m%d%H%M%S'))
-    write_to_s3(S3_CLIENT, tweets, AWS_BUCKET, key)
+    data_key = config['path_template'].format(end_dt.strftime('%Y%m%d%H%M%S'))
+    write_csv_to_s3(S3_CLIENT, tweets, AWS_BUCKET, data_key)
+
+    # log store
+    log_key = config['updates_path']
+    updates_file_exist = check_file(
+        S3_CLIENT,
+        AWS_BUCKET,
+        log_key
+    )
+    type_mapping = {
+        'start_dt': 'datetime64[ns, UTC]',
+        'end_dt': 'datetime64[ns, UTC]',
+        'update_dt': 'datetime64[ns, UTC]',
+        'num_records': 'int',
+        'file_path': 'str'
+    }
+    if updates_file_exist:
+        records = read_csv_from_s3(
+            S3_CLIENT,
+            AWS_BUCKET,
+            log_key,
+            dtype=type_mapping
+        )
+    else:
+        records = pd.DataFrame(columns=type_mapping.keys())
+
+    new_record = pd.DataFrame({
+        'start_dt': [start_dt],
+        'end_dt': [end_dt],
+        'update_dt': [pd.Timestamp.now('utc')],
+        'num_records': [len(tweets)],
+        'file_path': [data_key]
+    }).astype(type_mapping)
+
+    updates = pd.concat([records, new_record], ignore_index=True)
+    write_csv_to_s3(S3_CLIENT, updates, AWS_BUCKET, log_key)
 
 
 if __name__ == '__main__':

@@ -35,6 +35,7 @@ crawler:
   frequency: 60
   max_tweets_per_user: 19
   path_template: 'news_headlines_sentiment_index/tweets/{}.csv'
+  updates_path: 'news_headlines_sentiment_index/tweets_data_updates.csv'
 app:
   name: 'MyApp'
   model_path: models/{}.pickle

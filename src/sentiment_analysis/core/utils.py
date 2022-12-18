@@ -5,6 +5,7 @@ import yaml
 import csv
 import io
 import pandas as pd
+from botocore.errorfactory import ClientError
 from typing import Dict, Any
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split, cross_validate
@@ -110,7 +111,7 @@ def load_yaml(path: str, *sections) -> Any:
     return d
 
 
-def write_to_s3(s3_client, data: pd.DataFrame, bucket: str, key: str):
+def write_csv_to_s3(s3_client, data: pd.DataFrame, bucket: str, key: str):
     csvio = io.StringIO()
     writer = csv.writer(csvio)
     writer.writerow(data.columns)
@@ -125,3 +126,21 @@ def write_to_s3(s3_client, data: pd.DataFrame, bucket: str, key: str):
         Key=key
     )
     csvio.close()
+
+
+def read_csv_from_s3(
+    s3_client,
+    bucket: str,
+    key: str,
+    **kwargs
+) -> pd.DataFrame:
+    obj = s3_client.get_object(Bucket=bucket, Key=key)
+    return pd.read_csv(obj['Body'], **kwargs)
+
+
+def check_file(s3_client, bucket: str, key: str) -> bool:
+    try:
+        _ = s3_client.head_object(Bucket=bucket, Key=key)
+        return True
+    except ClientError:
+        return False
