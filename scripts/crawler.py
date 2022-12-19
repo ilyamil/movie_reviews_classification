@@ -4,8 +4,8 @@ import pandas as pd
 from dotenv import load_dotenv
 from sentiment_analysis.core.utils import (
     load_yaml,
-    write_csv_to_s3,
-    read_csv_from_s3,
+    write_data_to_s3,
+    read_data_from_s3,
     check_file
 )
 from sentiment_analysis.crawler.tweets import load_tweets
@@ -60,7 +60,7 @@ def run(*args):
 
     # data store
     data_key = config['path_template'].format(end_dt.strftime('%Y%m%d%H%M%S'))
-    write_csv_to_s3(S3_CLIENT, tweets, AWS_BUCKET, data_key)
+    write_data_to_s3(S3_CLIENT, tweets, AWS_BUCKET, data_key, format='csv')
 
     # log store
     log_key = config['updates_path']
@@ -69,7 +69,7 @@ def run(*args):
         AWS_BUCKET,
         log_key
     )
-    type_mapping = {
+    dtype = {
         'start_dt': 'datetime64[ns, UTC]',
         'end_dt': 'datetime64[ns, UTC]',
         'update_dt': 'datetime64[ns, UTC]',
@@ -77,14 +77,14 @@ def run(*args):
         'file_path': 'str'
     }
     if updates_file_exist:
-        records = read_csv_from_s3(
+        records = read_data_from_s3(
             S3_CLIENT,
             AWS_BUCKET,
             log_key,
-            dtype=type_mapping
-        )
+            format='csv'
+        ).astype(dtype)
     else:
-        records = pd.DataFrame(columns=type_mapping.keys())
+        records = pd.DataFrame(columns=dtype.keys()).astype(dtype)
 
     new_record = pd.DataFrame({
         'start_dt': [start_dt],
@@ -92,10 +92,10 @@ def run(*args):
         'update_dt': [pd.Timestamp.now('utc')],
         'num_records': [len(tweets)],
         'file_path': [data_key]
-    }).astype(type_mapping)
+    }).astype(dtype)
 
     updates = pd.concat([records, new_record], ignore_index=True)
-    write_csv_to_s3(S3_CLIENT, updates, AWS_BUCKET, log_key)
+    write_data_to_s3(S3_CLIENT, updates, AWS_BUCKET, log_key, format='csv')
 
 
 if __name__ == '__main__':

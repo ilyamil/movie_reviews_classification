@@ -111,31 +111,55 @@ def load_yaml(path: str, *sections) -> Any:
     return d
 
 
-def write_csv_to_s3(s3_client, data: pd.DataFrame, bucket: str, key: str):
-    csvio = io.StringIO()
-    writer = csv.writer(csvio)
-    writer.writerow(data.columns)
-
-    for row in data.values:
-        writer.writerow(row)
+def write_data_to_s3(
+    s3_client,
+    data: pd.DataFrame,
+    bucket: str,
+    key: str,
+    format: str,
+    **write_kwargs
+):
+    out_buffer = io.BytesIO()
+    if format == 'parquet':
+        data.to_parquet(out_buffer, index=False, **write_kwargs)
+    elif format == 'csv':
+        data.to_csv(out_buffer, index=False, **write_kwargs)
+    else:
+        raise ValueError('Unsupported format argument')
 
     s3_client.put_object(
-        Body=csvio.getvalue(),
+        Body=out_buffer.getvalue(),
         ContentType='application/vnd.ms-excel',
         Bucket=bucket,
         Key=key
     )
-    csvio.close()
 
 
-def read_csv_from_s3(
+def read_data_from_s3(
     s3_client,
     bucket: str,
     key: str,
-    **kwargs
+    format: str,
+    **read_kwargs
 ) -> pd.DataFrame:
+    """
+    Read data from S3 and load it into Pandas DataFrame.
+
+    Args:
+        s3_client: S3 Client
+        bucket (str): S3 Bucket
+        key (str): Path in S3 bucket to save file
+        format (str): The function supports only 'csv' and 'parquet'
+    Returns:
+        pd.DataFrame: data upates records
+    """
     obj = s3_client.get_object(Bucket=bucket, Key=key)
-    return pd.read_csv(obj['Body'], **kwargs)
+    if format == 'csv':
+        return pd.read_csv(obj['Body'], **read_kwargs)
+    elif format == 'parquet':
+        return pd.read_parquet(obj['Body'], **read_kwargs)
+    else:
+        raise ValueError('Unsupported format argument')
 
 
 def check_file(s3_client, bucket: str, key: str) -> bool:
